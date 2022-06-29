@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class Display {
+public class Display implements ItemListener{
     JFrame frame;
     JPanel top, center, bottom;
     JButton[] bNum = new JButton[10];
@@ -10,12 +11,15 @@ public class Display {
     JTextArea t1, t2, t3;
     int width, height;
     String[] oprNames = new String[] {
-        "Add", "Sub", "Mul", "Div", "Pow", ""
+        "Add", "Sub", "Mul", "Div", "Pow", "Mod"
+    };
+    String[] nums = new String[] {
+        "1" ,"2" ,"3" ,"4" ,"5" ,"6" ,"7" ,"8" ,"9" ,"0"
     };
     Font font;
+    boolean flag = false;
 
     Calculations calc = new Calculations(this);
-    ToggleEvent togg = new ToggleEvent(this);
 
     Display() {
 
@@ -75,8 +79,8 @@ public class Display {
         center.setFont(font);
         for(int i = 0; i < 12; i++) {
             if(i == 9) {
-                JButton bnu = new JButton("");
-                bnu.setEnabled(false);
+                JButton bnu = new JButton("Clear");
+                bnu.addActionListener(calc);
                 center.add(bnu);
             }
             else if(i == 10) {
@@ -86,11 +90,11 @@ public class Display {
             }
             else if(i == 11) {
                 btb = new JToggleButton("Change");
-                btb.addItemListener(togg);
+                btb.addItemListener(this);
                 center.add(btb);
             }
             else {
-                bNum[i] = new JButton("" + (i + 1));
+                bNum[i] = new JButton(nums[i]);
                 bNum[i].addActionListener(calc);
                 center.add(bNum[i]);
             }
@@ -103,7 +107,8 @@ public class Display {
         bottom.setLayout(new GridLayout(2, 4, 2, 2));
 
         for(int i = 0; i < 6; i++) {
-            bOpr[i] = new JButton("" + oprNames[i]);
+            bOpr[i] = new JButton(oprNames[i]);
+            bOpr[i].addActionListener(calc);
             bottom.add(bOpr[i]);
         }
         
@@ -118,5 +123,15 @@ public class Display {
         frame.setSize(width, height);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if(e.getStateChange() == e.SELECTED) {
+            flag = true;
+        }
+        else {
+            flag = false;
+        }
     }
 }
